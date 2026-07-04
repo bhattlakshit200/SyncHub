@@ -8,26 +8,39 @@ type ExperiencePhase =
 interface ExperienceStore {
   phase: ExperiencePhase;
   isAnimating: boolean;
+  scrollProgress: number;
+  targetScrollProgress: number;
 
   setPhase: (phase: ExperiencePhase) => void;
   setAnimating: (value: boolean) => void;
+  setScrollProgress: (progress: number) => void;
+  setTargetScrollProgress: (target: number) => void;
 }
 
 export const useExperienceStore = create<ExperienceStore>((set) => ({
   phase: "hero",
   isAnimating: false,
+  scrollProgress: 0,
+  targetScrollProgress: 0,
 
   setPhase: (phase) => {
-    console.log("Phase →", phase);
-
     set({ phase });
   },
 
   setAnimating: (value) => {
-    console.log("Animating →", value);
-
     set({
       isAnimating: value,
     });
+  },
+
+  setScrollProgress: (scrollProgress) => {
+    set({
+      scrollProgress,
+      phase: scrollProgress < 1.0 ? "hero" : "transition",
+    });
+  },
+
+  setTargetScrollProgress: (targetScrollProgress) => {
+    set({ targetScrollProgress });
   },
 }));

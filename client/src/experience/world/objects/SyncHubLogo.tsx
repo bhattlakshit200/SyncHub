@@ -3,10 +3,12 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useExperienceStore } from "@/store/useExperienceStore";
 import GlassMaterial from "../materials/GlassMaterial";
 
 export default function SyncHubLogo() {
   const group = useRef<THREE.Group>(null);
+  const materialRef = useRef<THREE.MeshPhysicalMaterial>(null);
 
   const curve = useMemo(() => {
     const points: THREE.Vector3[] = [];
@@ -39,12 +41,33 @@ export default function SyncHubLogo() {
     group.current.rotation.y = t * 0.2;
     group.current.rotation.x = Math.sin(t * 0.5) * 0.03;
     group.current.position.y = -0.05 + Math.sin(t * 0.8) * 0.06;
+
+    const sp = useExperienceStore.getState().scrollProgress;
+    
+    let targetScale = 0.5;
+    let targetOpacity = 1.0;
+
+    if (sp >= 1.0 && sp < 2.0) {
+      const p = sp - 1.0;
+      targetScale = 0.5 + p * 19.5; // Scale up to 20
+      targetOpacity = 1.0 - p;
+    } else if (sp >= 2.0) {
+      targetScale = 20.0;
+      targetOpacity = 0.0;
+    }
+
+    group.current.scale.setScalar(targetScale);
+
+    if (materialRef.current) {
+      materialRef.current.opacity = targetOpacity;
+      materialRef.current.visible = targetOpacity > 0.001;
+    }
   });
 
   return (
     <group ref={group} scale={0.5}>
       <mesh geometry={geometry} castShadow receiveShadow>
-        <GlassMaterial />
+        <GlassMaterial ref={materialRef} />
       </mesh>
     </group>
   );

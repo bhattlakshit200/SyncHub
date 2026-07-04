@@ -8,11 +8,7 @@ import { useExperienceStore } from "@/store/useExperienceStore";
 const GRID = 18;
 
 export default function GlassFragments() {
-  const phase = useExperienceStore((s) => s.phase);
-
   const group = useRef<THREE.Group>(null);
-
-  const progress = useRef(0);
 
   const pieces = useMemo(() => {
     const data = [];
@@ -44,13 +40,8 @@ export default function GlassFragments() {
   useFrame((_, delta) => {
     if (!group.current) return;
 
-    const target = phase === "transition" ? 1 : 0;
-
-    progress.current = THREE.MathUtils.lerp(
-      progress.current,
-      target,
-      delta * 2
-    );
+    const sp = useExperienceStore.getState().scrollProgress;
+    const p = Math.min(1.0, sp);
 
     group.current.children.forEach((child, i) => {
       const piece = pieces[i];
@@ -59,11 +50,18 @@ export default function GlassFragments() {
 
       child.position.addScaledVector(
         piece.velocity,
-        progress.current
+        p
       );
 
-      child.rotation.x = -Math.PI / 2 + progress.current * 2;
-      child.rotation.y = progress.current * 2;
+      child.rotation.x = -Math.PI / 2 + p * 2;
+      child.rotation.y = p * 2;
+
+      if (child instanceof THREE.Mesh && child.material) {
+        const mat = child.material as THREE.MeshPhysicalMaterial;
+        mat.opacity = 1.0 - p;
+        mat.transparent = true;
+        mat.visible = (1.0 - p) > 0.001;
+      }
     });
   });
 
