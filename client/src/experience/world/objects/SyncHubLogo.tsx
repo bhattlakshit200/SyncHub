@@ -43,7 +43,7 @@ export default function SyncHubLogo() {
     group.current.position.y = -0.05 + Math.sin(t * 0.8) * 0.06;
 
     const sp = useExperienceStore.getState().scrollProgress;
-    
+
     let targetScale = 0.5;
     let targetOpacity = 1.0;
 
