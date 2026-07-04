@@ -192,14 +192,15 @@ export default function ShapeBlur({
       material.uniforms.u_text_texture.value.needsUpdate = true;
     };
 
-    // Load font texture
-    if (document.fonts) {
-      document.fonts.ready.then(() => {
-        initTexture();
-      });
-    } else {
-      setTimeout(initTexture, 200);
-    }
+    // Explicitly load the font using the FontFace API so the browser downloads it immediately!
+    const font = new FontFace("Noorliza", "url(/fonts/noorliza.regular.otf)");
+    font.load().then((loadedFont) => {
+      document.fonts.add(loadedFont);
+      initTexture();
+    }).catch((err) => {
+      console.warn("Failed to load Noorliza font, falling back to sans-serif", err);
+      initTexture(); // Fallback
+    });
 
     const onPointerMove = (e: PointerEvent | MouseEvent) => {
       if (!mount) return;
