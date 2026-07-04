@@ -1,8 +1,12 @@
 "use client";
 
-export default function GlassMaterial() {
+import { forwardRef } from "react";
+import * as THREE from "three";
+
+const GlassMaterial = forwardRef<THREE.MeshPhysicalMaterial>((props, ref) => {
   return (
     <meshPhysicalMaterial
+      ref={ref}
       color="#7EE7FF"
       metalness={0}
       roughness={0}
@@ -15,4 +19,7 @@ export default function GlassMaterial() {
       opacity={1}
     />
   );
-}
+});
+
+GlassMaterial.displayName = "GlassMaterial";
+export default GlassMaterial;
