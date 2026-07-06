@@ -36,7 +36,7 @@ export const useExperienceStore = create<ExperienceStore>((set) => ({
   setScrollProgress: (scrollProgress) => {
     set({
       scrollProgress,
-      phase: scrollProgress < 1.0 ? "hero" : "transition",
+      phase: scrollProgress < 1.0 ? "hero" : scrollProgress < 3.0 ? "transition" : "about",
     });
   },
 

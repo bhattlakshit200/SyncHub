@@ -58,7 +58,7 @@ export default function ScrollController() {
       const change = e.deltaY * speed;
 
       const currentTarget = useExperienceStore.getState().targetScrollProgress;
-      const newTarget = THREE.MathUtils.clamp(currentTarget + change, 0, 3.0);
+      const newTarget = THREE.MathUtils.clamp(currentTarget + change, 0, 4.5);
       setTargetScrollProgress(newTarget);
     }
 

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useExperienceStore } from "@/store/useExperienceStore";
 import ShapeBlur from "@/components/layout/ShapeBlur";
 import { SparklesCore } from "@/components/ui/sparkles";
+import About from "@/components/sections/About";
 
 export default function Home() {
   const scrollProgress = useExperienceStore((state) => state.scrollProgress);
@@ -24,9 +25,25 @@ export default function Home() {
     };
   }, []);
 
+  // scrollProgress 2.0 to 3.0: main text fades in
   const t = scrollProgress > 2.0 ? Math.min(1.0, scrollProgress - 2.0) : 0.0;
-  const textScale = 1.0 + t * 0.5; // Scales up by 50% (up to 1.5x)
-  const effectActive = t; // Fade in the hover effect from 0.0 to 1.0
+  
+  // scrollProgress 3.0 to 3.5: main text fades out
+  const textFade = scrollProgress > 3.0 ? Math.max(0.0, 1.0 - (scrollProgress - 3.0) / 0.5) : 1.0;
+  
+  // scrollProgress 3.0 to 4.0: main text slides up
+  const textY = scrollProgress > 3.0 ? -(scrollProgress - 3.0) * 120 : 0;
+  
+  // Scale keeps at 1.5 after fading in
+  const textScale = 1.0 + Math.min(1.0, t) * 0.5;
+  const effectActive = Math.min(1.0, t);
+  const sparklesOpacity = Math.min(1.0, t) * textFade;
+
+  // scrollProgress 3.2 to 4.2: About section fades and slides in
+  const aboutProgress = scrollProgress > 3.2 ? Math.min(1.0, (scrollProgress - 3.2) / 1.0) : 0.0;
+  const aboutOpacity = aboutProgress;
+  const aboutY = (1.0 - aboutProgress) * 80;
+  const isAboutActive = scrollProgress >= 3.8;
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center overflow-hidden pointer-events-none relative">
@@ -34,8 +51,9 @@ export default function Home() {
       {/* SyncHub Text Div (centered exactly in the viewport) */}
       <div 
         style={{ 
-          transform: `scale(${textScale})`,
-          transition: "transform 0.1s ease-out",
+          transform: `scale(${textScale}) translateY(${textY}px)`,
+          opacity: textFade,
+          transition: "transform 0.1s ease-out, opacity 0.1s ease-out",
           width: "750px",
           height: "180px",
         }} 
@@ -46,7 +64,7 @@ export default function Home() {
         {/* Aceternity Sparkles Container - positioned directly underneath the text */}
         <div 
           style={{ 
-            opacity: t,
+            opacity: sparklesOpacity,
             transition: "opacity 0.2s ease-out",
             width: "450px",
             height: "150px",
@@ -79,6 +97,9 @@ export default function Home() {
         </div>
 
       </div>
+
+      {/* About Section */}
+      <About opacity={aboutOpacity} translateY={aboutY} isActive={isAboutActive} />
     </main>
   );
 }
