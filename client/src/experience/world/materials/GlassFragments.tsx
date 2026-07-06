@@ -41,7 +41,7 @@ export default function GlassFragments() {
     if (!group.current) return;
 
     const sp = useExperienceStore.getState().scrollProgress;
-    const p = Math.min(1.0, sp);
+    const p = sp < 3.0 ? 0.0 : Math.min(1.0, sp - 3.0);
 
     group.current.children.forEach((child, i) => {
       const piece = pieces[i];

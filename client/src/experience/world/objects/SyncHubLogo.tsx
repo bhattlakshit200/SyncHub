@@ -47,11 +47,21 @@ export default function SyncHubLogo() {
     let targetScale = 0.5;
     let targetOpacity = 1.0;
 
-    if (sp >= 1.0 && sp < 2.0) {
+    if (sp < 1.0) {
+      targetScale = 20.0;
+      targetOpacity = 0.0;
+    } else if (sp >= 1.0 && sp < 2.0) {
       const p = sp - 1.0;
-      targetScale = 0.5 + p * 19.5; // Scale up to 20
-      targetOpacity = 1.0 - p;
-    } else if (sp >= 2.0) {
+      targetScale = 20.0 - p * 19.5; // Zoom in / shrink down to 0.5
+      targetOpacity = p; // Fade in to 1.0
+    } else if (sp >= 2.0 && sp < 3.0) {
+      targetScale = 0.5;
+      targetOpacity = 1.0;
+    } else if (sp >= 3.0 && sp < 4.0) {
+      const p = sp - 3.0;
+      targetScale = 0.5 + p * 19.5; // Zoom out / scale up to 20
+      targetOpacity = Math.max(0.0, 1.0 - p); // Fade out to 0.0
+    } else {
       targetScale = 20.0;
       targetOpacity = 0.0;
     }
