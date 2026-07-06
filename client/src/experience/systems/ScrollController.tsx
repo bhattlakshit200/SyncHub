@@ -1,46 +1,3 @@
-// "use client";
-
-// import { useEffect } from "react";
-// import { useExperienceStore } from "@/store/useExperienceStore";
-
-// export default function ScrollController() {
-//   const phase = useExperienceStore((state) => state.phase);
-//   const isAnimating = useExperienceStore((state) => state.isAnimating);
-
-//   const setPhase = useExperienceStore((state) => state.setPhase);
-//   const setAnimating = useExperienceStore((state) => state.setAnimating);
-
-
-
-//   useEffect(() => {
-//     function handleWheel(e: WheelEvent) {
-//       if (isAnimating) return;
-
-//       // Scroll Down
-//       if (e.deltaY > 0 && phase === "hero") {
-//         setAnimating(true);
-//         setPhase("transition");
-//         return;
-//       }
-
-//       // Scroll Up
-//       if (e.deltaY < 0 && phase === "transition") {
-//         setAnimating(true);
-//         setPhase("hero");
-//         return;
-//       }
-//     }
-//     window.addEventListener("wheel", handleWheel, { passive: true });
-
-//     return () => {
-//       window.removeEventListener("wheel", handleWheel);
-//     };
-//   }, [phase, isAnimating, setAnimating, setPhase]);
-
-//   return null;
-// }
-
-
 "use client";
 
 import { useEffect } from "react";
@@ -58,7 +15,7 @@ export default function ScrollController() {
       const change = e.deltaY * speed;
 
       const currentTarget = useExperienceStore.getState().targetScrollProgress;
-      const newTarget = THREE.MathUtils.clamp(currentTarget + change, 0, 4.5);
+      const newTarget = THREE.MathUtils.clamp(currentTarget + change, 0, 6.0);
       setTargetScrollProgress(newTarget);
     }
 

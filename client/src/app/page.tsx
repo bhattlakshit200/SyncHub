@@ -5,6 +5,7 @@ import { useExperienceStore } from "@/store/useExperienceStore";
 import ShapeBlur from "@/components/layout/ShapeBlur";
 import { SparklesCore } from "@/components/ui/sparkles";
 import About from "@/components/sections/About";
+import Services from "@/components/sections/Services";
 
 export default function Home() {
   const scrollProgress = useExperienceStore((state) => state.scrollProgress);
@@ -27,43 +28,67 @@ export default function Home() {
 
   // scrollProgress 2.0 to 3.0: main text fades in
   const t = scrollProgress > 2.0 ? Math.min(1.0, scrollProgress - 2.0) : 0.0;
-  
+
   // scrollProgress 3.0 to 3.5: main text fades out
-  const textFade = scrollProgress > 3.0 ? Math.max(0.0, 1.0 - (scrollProgress - 3.0) / 0.5) : 1.0;
-  
+  const textFade =
+    scrollProgress > 3.0
+      ? Math.max(0.0, 1.0 - (scrollProgress - 3.0) / 0.5)
+      : 1.0;
+
   // scrollProgress 3.0 to 4.0: main text slides up
   const textY = scrollProgress > 3.0 ? -(scrollProgress - 3.0) * 120 : 0;
-  
+
   // Scale keeps at 1.5 after fading in
   const textScale = 1.0 + Math.min(1.0, t) * 0.5;
   const effectActive = Math.min(1.0, t);
   const sparklesOpacity = Math.min(1.0, t) * textFade;
 
   // scrollProgress 3.2 to 4.2: About section fades and slides in
-  const aboutProgress = scrollProgress > 3.2 ? Math.min(1.0, (scrollProgress - 3.2) / 1.0) : 0.0;
-  const aboutOpacity = aboutProgress;
-  const aboutY = (1.0 - aboutProgress) * 80;
+  const aboutProgress =
+    scrollProgress > 3.2 ? Math.min(1.0, (scrollProgress - 3.2) / 1.0) : 0.0;
+  const aboutEnter =
+    scrollProgress > 3.2 ? Math.min(1, scrollProgress - 3.2) : 0;
+
+  const aboutExit =
+    scrollProgress > 4.2 ? Math.min(1, scrollProgress - 4.2) : 0;
+
+  const aboutOpacity = aboutEnter * (1 - aboutExit);
+
+  const aboutY = (1 - aboutEnter) * 80 - aboutExit * 120;
   const isAboutActive = scrollProgress >= 3.8;
+
+  const servicesProgress =
+    scrollProgress > 4.2 ? Math.min(1, scrollProgress - 4.2) : 0;
+
+  const servicesOpacity = servicesProgress;
+
+  const servicesY = (1 - servicesProgress) * 80;
+
+  const isServicesActive = scrollProgress >= 4.8;
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center overflow-hidden pointer-events-none relative">
-      
       {/* SyncHub Text Div (centered exactly in the viewport) */}
-      <div 
-        style={{ 
+      <div
+        style={{
           transform: `scale(${textScale}) translateY(${textY}px)`,
           opacity: textFade,
           transition: "transform 0.1s ease-out, opacity 0.1s ease-out",
           width: "750px",
           height: "180px",
-        }} 
+        }}
         className="relative origin-center select-none flex items-center justify-center pointer-events-auto"
       >
-        <ShapeBlur className="w-full h-full" circleSize={0.2} effectActive={effectActive} gradientStrength={effectActive} />
+        <ShapeBlur
+          className="w-full h-full"
+          circleSize={0.2}
+          effectActive={effectActive}
+          gradientStrength={effectActive}
+        />
 
         {/* Aceternity Sparkles Container - positioned directly underneath the text */}
-        <div 
-          style={{ 
+        <div
+          style={{
             opacity: sparklesOpacity,
             transition: "opacity 0.2s ease-out",
             width: "450px",
@@ -72,8 +97,10 @@ export default function Home() {
             top: "135px", // Minimize gap, aligns exactly at the bottom baseline of the letters
             left: "50%",
             transform: "translateX(-50%)",
-            maskImage: "radial-gradient(ellipse at top, black 25%, transparent 75%)",
-            WebkitMaskImage: "radial-gradient(ellipse at top, black 25%, transparent 75%)",
+            maskImage:
+              "radial-gradient(ellipse at top, black 25%, transparent 75%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse at top, black 25%, transparent 75%)",
           }}
           className="pointer-events-none select-none flex flex-col items-center justify-start overflow-hidden"
         >
@@ -95,11 +122,20 @@ export default function Home() {
             particleColor="#FFFFFF"
           />
         </div>
-
       </div>
 
       {/* About Section */}
-      <About opacity={aboutOpacity} translateY={aboutY} isActive={isAboutActive} />
+      <About
+        opacity={aboutOpacity}
+        translateY={aboutY}
+        isActive={isAboutActive}
+      />
+
+      <Services
+        opacity={servicesOpacity}
+        translateY={servicesY}
+        isActive={isServicesActive}
+      />
     </main>
   );
 }
