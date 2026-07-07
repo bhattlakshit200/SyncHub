@@ -12,7 +12,7 @@ export default function CameraRig() {
       [
         pointer.x * 1.2,
         pointer.y * 0.8,
-        6,
+        camera.position.z,
       ],
       0.25,
       delta

@@ -12,12 +12,15 @@ export default function CameraController() {
   useFrame((state, delta) => {
     const sp = useExperienceStore.getState().scrollProgress;
 
-    // Camera starts at 8, moves to 3 as scrollProgress goes from 0 to 2
-    let targetZ = 8;
-    if (sp < 2.0) {
-      targetZ = 8 - sp * 2.5; // goes from 8 down to 3
-    } else {
-      targetZ = 3;
+    let targetZ = 3.0;
+    if (sp >= 1.0 && sp < 2.0) {
+      targetZ = 3.0 + (sp - 1.0) * 5.0; // zooms out from 3 to 8
+    } else if (sp >= 2.0 && sp < 3.0) {
+      targetZ = 8.0;
+    } else if (sp >= 3.0 && sp < 4.0) {
+      targetZ = 8.0 - (sp - 3.0) * 5.0; // zooms in from 8 to 3
+    } else if (sp >= 4.0) {
+      targetZ = 3.0;
     }
 
     easing.damp3(

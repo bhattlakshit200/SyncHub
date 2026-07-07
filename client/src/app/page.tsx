@@ -26,22 +26,35 @@ export default function Home() {
     };
   }, []);
 
-  // scrollProgress 2.0 to 3.0: main text fades in
-  const t = scrollProgress > 2.0 ? Math.min(1.0, scrollProgress - 2.0) : 0.0;
 
-  // scrollProgress 3.0 to 3.5: main text fades out
-  const textFade =
-    scrollProgress > 3.0
-      ? Math.max(0.0, 1.0 - (scrollProgress - 3.0) / 0.5)
-      : 1.0;
+  // Base text state parameters (Phase 1, scrollProgress < 1.0, fully active and visible)
+  let textFade = 1.0;
+  let textScale = 1.5;
+  let textY = 0;
+  let effectActive = 1.0;
+  let sparklesOpacity = 1.0;
 
-  // scrollProgress 3.0 to 4.0: main text slides up
-  const textY = scrollProgress > 3.0 ? -(scrollProgress - 3.0) * 120 : 0;
-
-  // Scale keeps at 1.5 after fading in
-  const textScale = 1.0 + Math.min(1.0, t) * 0.5;
-  const effectActive = Math.min(1.0, t);
-  const sparklesOpacity = Math.min(1.0, t) * textFade;
+  if (scrollProgress < 1.0) {
+    const t = 1.0 - scrollProgress;
+    textFade = 1.0;
+    textScale = 1.0 + t * 0.5; // goes from 1.5 down to 1.0
+    effectActive = t; // goes from 1.0 to 0.0
+    sparklesOpacity = t; // goes from 1.0 to 0.0
+  } else if (scrollProgress >= 1.0 && scrollProgress < 3.0) {
+    // In transition 1 and middle logo section, keep text flat white and visible at scale 1.0
+    textFade = 1.0;
+    textScale = 1.0;
+    effectActive = 0.0;
+    sparklesOpacity = 0.0;
+  } else if (scrollProgress >= 3.0) {
+    // Transition 2: flat text fades out and slides up
+    const p = scrollProgress - 3.0;
+    textFade = Math.max(0.0, 1.0 - p / 0.5);
+    textScale = Math.max(0.8, 1.0 - p * 0.2);
+    textY = -p * 120;
+    effectActive = 0.0;
+    sparklesOpacity = 0.0;
+  }
 
   // scrollProgress 3.2 to 4.2: About section fades and slides in
   const aboutProgress =
@@ -139,3 +152,4 @@ export default function Home() {
     </main>
   );
 }
+ 
